@@ -371,6 +371,32 @@ class StyleTest {
   }
 
   @Test
+  void testAsChildOfEmpty() {
+    final Style s0 = Style.empty();
+    final Style s1 = Style.style(NamedTextColor.DARK_RED, TextDecoration.BOLD, TextDecoration.ITALIC);
+    final Style s2 = s1.asChildOf(s0);
+    assertEquals(NamedTextColor.DARK_RED, s2.color());
+    assertDecorations(s2, ImmutableSet.of(TextDecoration.BOLD, TextDecoration.ITALIC), ImmutableSet.of());
+  }
+
+  @Test
+  void testAsChildOf() {
+    final Style s0 = Style.style(NamedTextColor.DARK_RED, TextDecoration.BOLD);
+    final Style s1 = Style.style(NamedTextColor.DARK_RED, TextDecoration.BOLD, TextDecoration.ITALIC);
+    final Style s2 = s1.asChildOf(s0);
+    assertNull(s2.color());
+    assertDecorations(s2, ImmutableSet.of(TextDecoration.ITALIC), ImmutableSet.of());
+  }
+
+  @Test
+  void testAsChildOfWithEmptyChild() {
+    final Style s0 = Style.style(NamedTextColor.DARK_RED, TextDecoration.BOLD);
+    final Style s1 = Style.empty();
+    final Style s2 = s1.asChildOf(s0);
+    assertSame(s1, s2);
+  }
+
+  @Test
   void testEquals() {
     new EqualsTester()
       .addEqualityGroup(
